@@ -30,11 +30,11 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
 def launch_nodes_withconfig(context, *args, **kwargs):
-    
+
     # Get the launch directory
     bringup_dir = get_package_share_directory('robotino3_navigation')
     launch_dir = os.path.join(bringup_dir, 'launch')
-    
+
     # Create the launch configuration variables
     namespace = LaunchConfiguration('namespace')
     launch_rviz = LaunchConfiguration('launch_rviz')
@@ -47,15 +47,15 @@ def launch_nodes_withconfig(context, *args, **kwargs):
     launch_mapserver = LaunchConfiguration('launch_mapserver')
     launch_nav2rviz = LaunchConfiguration('launch_nav2rviz')
     rviz_config = LaunchConfiguration('rviz_config')
-    
+
     launch_configuration = {}
     for argname, argval in context.launch_configurations.items():
         launch_configuration[argname] = argval
-    
+
     params_file = os.path.join(bringup_dir, 'config', launch_configuration['namespace']+'_nav2_params.yaml')
 
     rviz_config = os.path.join(bringup_dir, 'rviz', launch_configuration['namespace']+'_nav2config.rviz')
-        
+
     # Specify the actions
     bringup_cmd_group = GroupAction([
 
@@ -82,14 +82,14 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                               'use_composition': use_composition,
                               'use_respawn': use_respawn,
                               }.items()),
-        
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(launch_dir, 'robotino_collisionmonitor.launch.py')),
-            launch_arguments={'namespace': namespace,
-                              'use_sim_time': use_sim_time,
-                              'params_file': params_file,
-                              }.items()),
-        
+
+        # IncludeLaunchDescription(
+        #     PythonLaunchDescriptionSource(os.path.join(launch_dir, 'robotino_collisionmonitor.launch.py')),
+        #     launch_arguments={'namespace': namespace,
+        #                       'use_sim_time': use_sim_time,
+        #                       'params_file': params_file,
+        #                       }.items()),
+
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(launch_dir, 'robotino_rviz.launch.py')),
             launch_arguments={'namespace': namespace,
@@ -97,7 +97,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                               'rviz_config': rviz_config,
                               }.items()),
     ])
-    
+
     return[bringup_cmd_group]
 
 
@@ -113,7 +113,7 @@ def generate_launch_description():
         'namespace',
         default_value='',
         description='Top-level namespace')
-    
+
     declare_launch_rviz_cmd = DeclareLaunchArgument(
         'launch_rviz',
         default_value='false',
@@ -152,17 +152,17 @@ def generate_launch_description():
     declare_log_level_cmd = DeclareLaunchArgument(
         'log_level', default_value='info',
         description='log level')
-    
+
     declare_launchmapserver_cmd = DeclareLaunchArgument(
         'launch_mapserver', default_value='true',
         description='whether to launch map server or not')
-    
+
     declare_launchrviz_cmd = DeclareLaunchArgument(
         'launch_nav2rviz', default_value='true',
         description='whether to launch rviz or not')
-    
+
     declare_rvizconfig_cmd = DeclareLaunchArgument(
-        'rviz_config', 
+        'rviz_config',
         default_value='',
         description='Full path to the RVIZ config file to use for all launched nodes')
 

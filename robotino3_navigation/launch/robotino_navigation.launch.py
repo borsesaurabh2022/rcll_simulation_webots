@@ -24,7 +24,7 @@ from launch_ros.descriptions import ComposableNode, ParameterFile
 from nav2_common.launch import RewrittenYaml
 
 def launch_nodes_withconfig(context, *args, **kwargs):
-    
+
     # create the launch configuration variables
     namespace = LaunchConfiguration('namespace')
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -41,11 +41,11 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                        'bt_navigator',
                        'waypoint_follower',
                        'velocity_smoother']
-    
+
     launch_configuration = {}
     for argname, argval in context.launch_configurations.items():
         launch_configuration[argname] = argval
-    
+
     remappings = [('/'+launch_configuration['namespace']+'/tf', '/tf'),
                   ('/'+launch_configuration['namespace']+'/tf_static', '/tf_static'),
                   ('/'+launch_configuration['namespace']+'/map','/map')]
@@ -62,7 +62,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
             param_rewrites=param_substitutions,
             convert_types=True),
         allow_substs=True)
-    
+
     # Create the list of nodes to start
     load_nodes = GroupAction(
         actions=[
@@ -96,7 +96,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 respawn_delay=2.0,
                 parameters=[configured_params],
                 arguments=['--ros-args', '--log-level', log_level],
-                remappings=remappings, 
+                remappings=remappings,
                 namespace=namespace),
             Node(
                 package='nav2_behaviors',
@@ -118,7 +118,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 respawn_delay=2.0,
                 parameters=[configured_params],
                 arguments=['--ros-args', '--log-level', log_level],
-                remappings=remappings, 
+                remappings=remappings,
                 namespace=namespace),
             Node(
                 package='nav2_waypoint_follower',
@@ -129,7 +129,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 respawn_delay=2.0,
                 parameters=[configured_params],
                 arguments=['--ros-args', '--log-level', log_level],
-                remappings=remappings, 
+                remappings=remappings,
                 namespace=namespace),
             Node(
                 package='nav2_velocity_smoother',
@@ -140,8 +140,8 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 respawn_delay=2.0,
                 parameters=[configured_params],
                 arguments=['--ros-args', '--log-level', log_level],
-                remappings=remappings + [('cmd_vel', 'cmd_vel_nav')],
-                        #[('cmd_vel', 'cmd_vel_nav'), ('cmd_vel_smoothed', 'cmd_vel')],
+                remappings=remappings + #[('cmd_vel', 'cmd_vel_nav')],
+                        [('cmd_vel', 'cmd_vel_nav'), ('cmd_vel_smoothed', 'cmd_vel')],
                 namespace=namespace),
             Node(
                 package='nav2_lifecycle_manager',
@@ -155,7 +155,7 @@ def launch_nodes_withconfig(context, *args, **kwargs):
                 namespace=namespace),
         ]
     )
-    
+
     return [load_nodes]
 
 def generate_launch_description():
@@ -203,7 +203,7 @@ def generate_launch_description():
     ld.add_action(declare_autostart_cmd)
     ld.add_action(declare_use_respawn_cmd)
     ld.add_action(declare_log_level_cmd)
-    
+
     # Add the actions to launch all of the navigation nodes
     ld.add_action(OpaqueFunction(function=launch_nodes_withconfig))
 
