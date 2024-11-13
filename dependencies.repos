@@ -12,4 +12,4 @@ repositories:
     type: git
     local-name: robotino_navigation
     url: https://github.com/borsesaurabh2022/robotino_navigation.git
-    version: master
+    version: main
